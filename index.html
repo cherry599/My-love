@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Will You Be My Valentine 💘</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+body{overflow:hidden}
+
+.page{
+  position:absolute;
+  width:100%;
+  height:100vh;
+  background-size:cover;
+  background-position:center;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  text-align:center;
+  padding:20px;
+}
+.page.active{display:flex}
+
+.box{
+  background:rgba(0,0,0,0.5);
+  color:#fff;
+  padding:20px 24px;
+  border-radius:26px;
+  max-width:90%;
+}
+
+h2{font-size:26px;margin-bottom:10px}
+p{font-size:18px}
+
+button{
+  margin:10px;
+  padding:12px 26px;
+  border:none;
+  border-radius:30px;
+  font-size:16px;
+  background:#ff4d6d;
+  color:white;
+  cursor:pointer;
+}
+
+.sticker{
+  font-size:50px;
+  margin-bottom:15px;
+  animation: float 2s infinite ease-in-out;
+}
+
+@keyframes float{
+  0%{transform:translateY(0)}
+  50%{transform:translateY(-8px)}
+  100%{transform:translateY(0)}
+}
+
+.hearts{
+  position:fixed;
+  font-size:24px;
+  animation: fall 3s linear infinite;
+}
+@keyframes fall{
+  from{top:-10%}
+  to{top:110%}
+}
+</style>
+</head>
+
+<body>
+
+<!-- Q1 -->
+<div class="page active" style="background-image:url('assets/bg1.png')">
+  <div class="sticker">🥺❤️</div>
+  <div class="box">
+    <h2>Quick question.</h2>
+    <p>Do you miss me right now?</p>
+  </div>
+  <button onclick="next()">🥺 Obviously yes</button>
+  <button onclick="next()">🙄 I’m pretending I don’t</button>
+</div>
+
+<!-- Q2 -->
+<div class="page" style="background-image:url('assets/bg2.png')">
+  <div class="sticker">💋✨</div>
+  <div class="box">
+    <h2>If I were in front of you…</h2>
+    <p>What would you do first?</p>
+  </div>
+  <button onclick="next()">😘 Hug</button>
+  <button onclick="next()">💋 Kiss</button>
+  <button onclick="next()">🫂 Never let go</button>
+</div>
+
+<!-- Q3 -->
+<div class="page" style="background-image:url('assets/bg3.png')">
+  <div class="sticker">🖤😌</div>
+  <div class="box">
+    <h2>Be honest.</h2>
+    <p>Am I your favorite person?</p>
+  </div>
+  <button onclick="next()">🖤 Yes</button>
+  <button onclick="next()">💖 YES BUT LOUDER</button>
+</div>
+
+<!-- VALENTINE QUESTION -->
+<div class="page" style="background-image:url('assets/bg4.png')">
+  <div class="sticker">🌹💘</div>
+  <div class="box">
+    <h2>Okay… final question.</h2>
+    <p>Will you be my Valentine?</p>
+  </div>
+  <button onclick="yes()">💍 YES</button>
+  <button onclick="no()">😈 NO</button>
+</div>
+
+<!-- YES PAGE -->
+<div class="page" style="background-image:url('assets/bg5.png')">
+  <div class="sticker">💖💍</div>
+  <div class="box">
+    <h2>Correct choice.</h2>
+    <p>
+      You just unlocked unlimited kisses,  
+      dramatic love,  
+      and me being hopelessly yours 💋❤️
+    </p>
+  </div>
+</div>
+
+<script>
+let pages=document.querySelectorAll('.page');
+let current=0;
+
+function next(){
+  pages[current].classList.remove('active');
+  current++;
+  pages[current].classList.add('active');
+}
+
+function yes(){
+  pages[current].classList.remove('active');
+  current++;
+  pages[current].classList.add('active');
+  heartRain();
+}
+
+function no(){
+  alert("Wrong answer 😌 But nice try.");
+  alert("Redirecting you to YES 💘");
+  yes();
+}
+
+function heartRain(){
+  for(let i=0;i<20;i++){
+    let h=document.createElement("div");
+    h.className="hearts";
+    h.innerHTML="💖";
+    h.style.left=Math.random()*100+"vw";
+    h.style.animationDuration=(2+Math.random()*3)+"s";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),4000);
+  }
+}
+</script>
+
+</body>
+</html>
