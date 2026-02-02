@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Only For You ❤️</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.page {
+  display: none;
+  height: 100vh;
+  width: 100vw;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  text-align: center;
+  color: white;
+  padding-top: 50px;
+}
+
+.page.active {
+  display: block;
+}
+
+h2, p {
+  background: rgba(0,0,0,0.4);
+  display: inline-block;
+  padding: 10px 16px;
+  border-radius: 20px;
+}
+
+button, input {
+  padding: 14px;
+  border-radius: 30px;
+  border: none;
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+button {
+  background: hotpink;
+  color: white;
+}
+</style>
+</head>
+
+<body>
+
+<!-- PAGE 1 -->
+<div class="page active" style="background-image:url('assets/bg1.png')">
+  <h2>⚠️ PRIVATE WEBSITE</h2>
+  <p>Only one person can enter</p><br>
+  <input id="name" placeholder="Enter your name 💌"><br>
+  <button onclick="enter()">Enter</button>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page" style="background-image:url('assets/bg2.png')">
+  <h2>Hey my love ❤️</h2><br>
+  <button onclick="next()">Next</button>
+</div>
+
+<!-- PAGE 3 -->
+<div class="page" style="background-image:url('assets/bg3.png')">
+  <h2>You are my favorite person 💕</h2><br>
+  <button onclick="next()">Next</button>
+</div>
+
+<!-- PAGE 4 -->
+<div class="page" style="background-image:url('assets/bg4.png')">
+  <h2>I wish I could kiss you right now 😘</h2><br>
+  <button onclick="next()">Next</button>
+</div>
+
+<!-- PAGE 5 -->
+<div class="page" style="background-image:url('assets/bg5.png')">
+  <h2>I love you ❤️</h2>
+</div>
+
+<script>
+const pages = document.querySelectorAll('.page');
+let i = 0;
+const allowedName = "cupcake";
+
+function enter() {
+  const input = document.getElementById('name').value.trim().toLowerCase();
+  if (input === allowedName.toLowerCase()) {
+    pages[i].classList.remove('active');
+    i = 1;
+    pages[i].classList.add('active');
+  } else {
+    alert("No. Only YOU can enter 😌");
+  }
+}
+
+function next() {
+  pages[i].classList.remove('active');
+  i++;
+  pages[i].classList.add('active');
+}
+</script>
+
+</body>
+</html>
