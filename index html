@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Love Tic Tac Toe 💘</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(135deg,#ff4d6d,#ff85a1);
+  font-family:sans-serif;
+  color:white;
+}
+
+.box{
+  background:rgba(0,0,0,0.45);
+  padding:22px;
+  border-radius:24px;
+  text-align:center;
+  width:330px;
+}
+
+.board{
+  display:grid;
+  grid-template-columns:repeat(3,90px);
+  gap:10px;
+  margin:15px auto;
+}
+
+.cell{
+  width:90px;
+  height:90px;
+  background:rgba(255,255,255,0.2);
+  border-radius:18px;
+  font-size:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+
+input,button{
+  padding:10px;
+  border-radius:20px;
+  border:none;
+  width:100%;
+  margin-top:10px;
+}
+
+button{
+  background:#ff4d6d;
+  color:white;
+  cursor:pointer;
+}
+
+.hearts{
+  position:fixed;
+  font-size:26px;
+  animation: fall 3s linear infinite;
+}
+
+@keyframes fall{
+  from{top:-10%}
+  to{top:110%}
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>Love Tic Tac Toe 💖</h2>
+
+  <!-- SETUP -->
+  <div id="setup">
+    <input id="myName" placeholder="Your name 💕">
+    <p>Your room code:</p>
+    <h3 id="myId">Loading…</h3>
+    <p>OR join your partner:</p>
+    <input id="joinId" placeholder="Enter room code">
+    <button onclick="join()">Connect 💞</button>
+  </div>
+
+  <!-- GAME -->
+  <div id="game" style="display:none">
+    <p id="status"></p>
+    <p id="kisses"></p>
+
+    <div class="board">
+      <div class="cell" onclick="play(0)"></div>
+      <div class="cell" onclick="play(1)"></div>
+      <div class="cell" onclick="play(2)"></div>
+      <div class="cell" onclick="play(3)"></div>
+      <div class="cell" onclick="play(4)"></div>
+      <div class="cell" onclick="play(5)"></div>
+      <div class="cell" onclick="play(6)"></div>
+      <div class="cell" onclick="play(7)"></div>
+      <div class="cell" onclick="play(8)"></div>
+    </div>
+
+    <button onclick="reset()">Restart 💘</button>
+  </div>
+</div>
+
+<script>
+let peer = new Peer();
+let conn;
+let board = Array(9).fill("");
+let mySymbol = "💋";
+let turn = "💋";
+let gameOver = false;
+let kisses = 0;
+let myName = "Me";
+let otherName = "Partner";
+
+const cells = document.querySelectorAll(".cell");
+const status = document.getElementById("status");
+const kissText = document.getElementById("kisses");
+
+peer.on("open", id=>{
+  document.getElementById("myId").innerText = id;
+});
+
+peer.on("connection", c=>{
+  conn = c;
+  mySymbol = "❌";
+  start();
+});
+
+function join(){
+  const id = document.getElementById("joinId").value.trim();
+  if(!id) return;
+  conn = peer.connect(id);
+  conn.on("open", start);
+}
+
+function start(){
+  myName = document.getElementById("myName").value || "Me";
+  document.getElementById("setup").style.display="none";
+  document.getElementById("game").style.display="block";
+
+  conn.on("data", data=>{
+    board = data.board;
+    turn = data.turn;
+    gameOver = data.gameOver;
+    kisses = data.kisses;
+    otherName = data.name;
+    render();
+    if(data.winner) showWin(data.winner);
+  });
+
+  conn.send({name:myName});
+}
+
+function play(i){
+  if(board[i] || turn!==mySymbol || gameOver) return;
+  board[i]=mySymbol;
+  const winner = checkWin();
+  turn = mySymbol==="💋"?"❌":"💋";
+  send(winner);
+}
+
+function send(winner){
+  conn.send({
+    board,turn,gameOver,winner,kisses,name:myName
+  });
+  render();
+  if(winner) showWin(winner);
+}
+
+function checkWin(){
+  const w=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  for(let c of w){
+    if(board[c[0]] && board[c[0]]===board[c[1]] && board[c[1]]===board[c[2]]){
+      gameOver=true;
+      return board[c[0]];
+    }
+  }
+  if(!board.includes("")){
+    gameOver=true;
+    return "draw";
+  }
+  return null;
+}
+
+function showWin(w){
+  if(w==="draw"){
+    status.innerText="It’s a draw 😌";
+  }else{
+    kisses++;
+    status.innerText = w===mySymbol
+      ? `${myName} wins 😘`
+      : `${otherName} wins 😏`;
+    heartRain();
+  }
+}
+
+function reset(){
+  board=Array(9).fill("");
+  turn="💋";
+  gameOver=false;
+  send(null);
+}
+
+function render(){
+  board.forEach((v,i)=>cells[i].innerText=v);
+  kissText.innerText="Kisses earned: 😘 "+kisses;
+  if(!gameOver) status.innerText="Turn: "+turn;
+}
+
+function heartRain(){
+  for(let i=0;i<25;i++){
+    let h=document.createElement("div");
+    h.className="hearts";
+    h.innerHTML="💖";
+    h.style.left=Math.random()*100+"vw";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),4000);
+  }
+}
+</script>
+
+</body>
+</html>
